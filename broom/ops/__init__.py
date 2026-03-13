@@ -1,3 +1,7 @@
+from .constraint import (
+    VIEW3D_OT_broom_constraint_naming,
+    VIEW3D_OT_broom_constraint_shrink_panel,
+)
 from .modifier import (
     VIEW3D_OT_broom_modifier_naming,
     VIEW3D_OT_broom_modifier_shrink_panel,
@@ -8,6 +12,8 @@ classes = (
     VIEW3D_OT_broom_modifier_subsurf_uv_smooth,
     VIEW3D_OT_broom_modifier_naming,
     VIEW3D_OT_broom_modifier_shrink_panel,
+    VIEW3D_OT_broom_constraint_naming,
+    VIEW3D_OT_broom_constraint_shrink_panel,
 )
 
 

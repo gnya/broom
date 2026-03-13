@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 from bpy.types import Panel
 from broom.ops import (
+    VIEW3D_OT_broom_constraint_naming,
+    VIEW3D_OT_broom_constraint_shrink_panel,
     VIEW3D_OT_broom_modifier_naming,
     VIEW3D_OT_broom_modifier_shrink_panel,
     VIEW3D_OT_broom_modifier_subsurf_uv_smooth,
@@ -37,4 +39,15 @@ class VIEW3D_PT_broom(Panel):
             VIEW3D_OT_broom_modifier_subsurf_uv_smooth.bl_idname,
             "uv_smooth",
             text="Modifier Subsurf UV Smooth",
+        )
+
+        layout.separator()
+
+        layout.operator(
+            VIEW3D_OT_broom_constraint_naming.bl_idname,
+            text="Constraint Naming",
+        )
+        layout.operator(
+            VIEW3D_OT_broom_constraint_shrink_panel.bl_idname,
+            text="Constraint Shrink Panel",
         )
