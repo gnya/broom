@@ -1,0 +1,25 @@
+from .modifier import (
+    VIEW3D_OT_broom_modifier_naming,
+    VIEW3D_OT_broom_modifier_shrink_panel,
+    VIEW3D_OT_broom_modifier_subsurf_uv_smooth,
+)
+
+classes = (
+    VIEW3D_OT_broom_modifier_subsurf_uv_smooth,
+    VIEW3D_OT_broom_modifier_naming,
+    VIEW3D_OT_broom_modifier_shrink_panel,
+)
+
+
+def register():
+    from bpy.utils import register_class
+
+    for cls in classes:
+        register_class(cls)
+
+
+def unregister():
+    from bpy.utils import unregister_class
+
+    for cls in classes:
+        unregister_class(cls)
