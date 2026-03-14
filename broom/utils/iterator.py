@@ -6,8 +6,18 @@ import bpy
 from bpy.types import NodeTree
 
 if TYPE_CHECKING:
-    from bpy._typing.rna_enums import ConstraintTypeItems, ObjectModifierTypeItems
-    from bpy.types import ID, Constraint, Modifier, Node
+    from bpy._typing.rna_enums import (
+        ConstraintTypeItems,
+        ObjectModifierTypeItems,
+        ObjectTypeItems,
+    )
+    from bpy.types import ID, Constraint, Modifier, Node, Object
+
+
+def object_itr(type: ObjectTypeItems | None = None) -> Iterator[Object]:
+    for obj in bpy.data.objects:
+        if type is None or obj.type == type:
+            yield obj
 
 
 def modifier_itr(type: ObjectModifierTypeItems | None = None) -> Iterator[Modifier]:

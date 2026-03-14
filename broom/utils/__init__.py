@@ -5,6 +5,7 @@ from .iterator import (
     modifier_itr,
     node_connection_itr,
     node_itr,
+    object_itr,
 )
 from .modifier import parse_nodes_modifier_io
 from .node import node_abs_location
@@ -21,4 +22,5 @@ __all__ = [
     node_itr,
     node_abs_location,
     node_connection_itr,
+    object_itr,
 ]
