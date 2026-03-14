@@ -9,6 +9,8 @@ from broom.ops import (
     VIEW3D_OT_broom_modifier_naming,
     VIEW3D_OT_broom_modifier_shrink_panel,
     VIEW3D_OT_broom_modifier_subsurf_uv_smooth,
+    VIEW3D_OT_broom_node_tree_align_grid,
+    VIEW3D_OT_broom_node_tree_show_users,
 )
 from broom.utils import override
 
@@ -50,4 +52,15 @@ class VIEW3D_PT_broom(Panel):
         layout.operator(
             VIEW3D_OT_broom_constraint_shrink_panel.bl_idname,
             text="Constraint Shrink Panel",
+        )
+
+        layout.separator()
+
+        layout.operator(
+            VIEW3D_OT_broom_node_tree_show_users.bl_idname,
+            text="NodeTree Show Users",
+        )
+        layout.operator(
+            VIEW3D_OT_broom_node_tree_align_grid.bl_idname,
+            text="NodeTree Align Grid",
         )

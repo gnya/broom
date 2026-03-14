@@ -3,10 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Iterator
 
 import bpy
+from bpy.types import NodeTree
 
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import ConstraintTypeItems, ObjectModifierTypeItems
-    from bpy.types import Constraint, Modifier
+    from bpy.types import ID, Constraint, Modifier, Node
 
 
 def modifier_itr(type: ObjectModifierTypeItems | None = None) -> Iterator[Modifier]:
@@ -29,3 +30,51 @@ def constraint_itr(
                 for constraint in bone.constraints:
                     if type is None or constraint.type == type:
                         yield constraint
+
+
+def node_connection_itr(node: Node) -> Iterator[Node]:
+    for input in node.inputs:
+        for link in input.links:
+            yield link.from_node
+
+    for output in node.outputs:
+        for link in output.links:
+            yield link.to_node
+
+
+def node_itr(data: ID, node_tree: NodeTree | None = None) -> Iterator[Node]:
+    data_node_tree = getattr(data, "node_tree", data)
+
+    if isinstance(data_node_tree, NodeTree):
+        for node in data_node_tree.nodes:
+            if node_tree is None or node_tree == getattr(node, "node_tree", None):
+                yield node
+
+
+def id_node_tree_user_itr() -> Iterator[ID]:
+    for data in bpy.data.node_groups:
+        yield data
+
+    for data in bpy.data.materials:
+        if data.use_nodes:
+            yield data
+
+    for data in bpy.data.scenes:
+        if data.use_nodes:
+            yield data
+
+    for data in bpy.data.linestyles:
+        if data.use_nodes:
+            yield data
+
+    for data in bpy.data.lights:
+        if data.use_nodes:
+            yield data
+
+    for data in bpy.data.worlds:
+        if data.use_nodes:
+            yield data
+
+    for data in bpy.data.textures:
+        if data.use_nodes:
+            yield data

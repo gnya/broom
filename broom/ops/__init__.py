@@ -7,6 +7,10 @@ from .modifier import (
     VIEW3D_OT_broom_modifier_shrink_panel,
     VIEW3D_OT_broom_modifier_subsurf_uv_smooth,
 )
+from .node_tree import (
+    VIEW3D_OT_broom_node_tree_align_grid,
+    VIEW3D_OT_broom_node_tree_show_users,
+)
 
 classes = (
     VIEW3D_OT_broom_modifier_subsurf_uv_smooth,
@@ -14,6 +18,8 @@ classes = (
     VIEW3D_OT_broom_modifier_shrink_panel,
     VIEW3D_OT_broom_constraint_naming,
     VIEW3D_OT_broom_constraint_shrink_panel,
+    VIEW3D_OT_broom_node_tree_show_users,
+    VIEW3D_OT_broom_node_tree_align_grid,
 )
 
 

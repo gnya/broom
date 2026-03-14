@@ -1,6 +1,13 @@
 from .driver import has_driver
-from .iterator import constraint_itr, modifier_itr
+from .iterator import (
+    constraint_itr,
+    id_node_tree_user_itr,
+    modifier_itr,
+    node_connection_itr,
+    node_itr,
+)
 from .modifier import parse_nodes_modifier_io
+from .node import node_abs_location
 from .typing import enum_to_items, override
 
 __all__ = [
@@ -10,4 +17,8 @@ __all__ = [
     parse_nodes_modifier_io,
     constraint_itr,
     has_driver,
+    id_node_tree_user_itr,
+    node_itr,
+    node_abs_location,
+    node_connection_itr,
 ]

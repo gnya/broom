@@ -5,6 +5,7 @@ from .modifier import (
     modifier_subsurf_uv_smooth,
     modifier_subsurf_uv_smooth_items,
 )
+from .node_tree import node_tree_align_grid, node_tree_show_users
 
 __all__ = [
     modifier_naming,
@@ -13,4 +14,6 @@ __all__ = [
     modifier_subsurf_uv_smooth_items,
     constraint_shrink_panel,
     constraint_naming,
+    node_tree_show_users,
+    node_tree_align_grid,
 ]
