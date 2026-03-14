@@ -3,9 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import bpy
-from bpy.props import StringProperty
+from bpy.props import BoolProperty, StringProperty
 from bpy.types import Operator
-from broom.core import node_tree_align_grid, node_tree_show_users
+from broom.core import (
+    node_tree_align_grid,
+    node_tree_hide_unused_sockets,
+    node_tree_show_users,
+)
 from broom.utils import override
 
 if TYPE_CHECKING:
@@ -46,5 +50,20 @@ class VIEW3D_OT_broom_node_tree_align_grid(Operator):
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:
         node_tree_align_grid(self.report)
+
+        return {"FINISHED"}
+
+
+class VIEW3D_OT_broom_node_tree_hide_unused_sockets(Operator):
+    bl_idname = "view3d.broom_node_tree_hide_unused_sockets"
+    bl_label = "NodeTree Hide Unused Sockets"
+    bl_description = "NodeTree Hide Unused Sockets"
+    bl_options = {"REGISTER", "UNDO"}
+
+    input_only: BoolProperty(name="Input Only", default=True)
+
+    @override
+    def execute(self, context: Context) -> set[OperatorReturnItems]:
+        node_tree_hide_unused_sockets(self.input_only, self.report)
 
         return {"FINISHED"}

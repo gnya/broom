@@ -132,3 +132,35 @@ def node_tree_align_grid(report: Report = print):
             _nodes_align_grid(nodes_copy, None, data, report)
 
         _nodes_align_corner(nodes, data, report)
+
+
+def node_tree_hide_unused_sockets(input_only: bool, report: Report = print):
+    for data in id_node_tree_user_itr():
+        for node in node_itr(data):
+            for input in node.inputs:
+                if (
+                    len(input.links) == 0
+                    and input.enabled
+                    and not input.hide
+                    and (input.hide_value or input.type in {"SHADER", "GEOMETRY"})
+                ):
+                    report(
+                        {"INFO"},
+                        f"Hide unused input. : {data.name} {node.name} {input.name}",
+                    )
+                    input.hide = True
+
+            for output in node.outputs:
+                if (
+                    len(output.links) == 0
+                    and output.enabled
+                    and not output.hide
+                    and not input_only
+                ):
+                    report(
+                        {"INFO"},
+                        f"Hide unused output. : {data.name} {node.name} {output.name}",
+                    )
+                    output.hide = True
+
+        data.update_tag()
