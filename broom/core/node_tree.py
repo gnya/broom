@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Callable
 
 from broom.utils import (
     id_node_tree_user_itr,
+    modifier_itr,
     node_abs_location,
     node_connection_itr,
     node_itr,
@@ -24,6 +25,14 @@ def node_tree_show_users(node_tree: NodeTree, report: Report = print):
         for data in id_node_tree_user_itr():
             for node in node_itr(data, node_tree):
                 report({"INFO"}, f"Node Tree user found. : {data.name} {node.name}")
+                count += 1
+
+        for modifier in modifier_itr("NODES"):
+            if modifier.node_group == node_tree:
+                report(
+                    {"INFO"},
+                    f"Node Tree user found. : {modifier.id_data.name} {modifier.name}",
+                )
                 count += 1
 
     if count == 0:
@@ -155,6 +164,7 @@ def node_tree_hide_unused_sockets(input_only: bool, report: Report = print):
                     len(output.links) == 0
                     and output.enabled
                     and not output.hide
+                    and (output.hide_value or output.type in {"SHADER", "GEOMETRY"})
                     and not input_only
                 ):
                     report(

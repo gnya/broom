@@ -11,7 +11,7 @@ if TYPE_CHECKING:
         ObjectModifierTypeItems,
         ObjectTypeItems,
     )
-    from bpy.types import ID, Constraint, Modifier, Node, Object
+    from bpy.types import ID, Armature, Constraint, Modifier, Node, Object
 
 
 def object_itr(type: ObjectTypeItems | None = None) -> Iterator[Object]:
@@ -59,6 +59,11 @@ def node_itr(data: ID, node_tree: NodeTree | None = None) -> Iterator[Node]:
         for node in data_node_tree.nodes:
             if node_tree is None or node_tree == getattr(node, "node_tree", None):
                 yield node
+
+
+def armature_itr() -> Iterator[Armature]:
+    for armature in bpy.data.armatures:
+        yield armature
 
 
 def id_node_tree_user_itr() -> Iterator[ID]:

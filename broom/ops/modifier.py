@@ -14,7 +14,7 @@ from broom.utils import override
 
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import OperatorReturnItems
-    from bpy.types import Context
+    from bpy.types import Context, Event
 
 
 class VIEW3D_OT_broom_modifier_naming(Operator):
@@ -56,3 +56,13 @@ class VIEW3D_OT_broom_modifier_subsurf_uv_smooth(Operator):
         modifier_subsurf_uv_smooth(self.uv_smooth, self.report)
 
         return {"FINISHED"}
+
+    @override
+    def invoke(self, context: Context, event: Event) -> set[OperatorReturnItems]:
+        return context.window_manager.invoke_props_dialog(self)
+
+    @override
+    def draw(self, context: Context):
+        layout = self.layout
+
+        layout.prop(self, "uv_smooth")

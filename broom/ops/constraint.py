@@ -18,7 +18,7 @@ class VIEW3D_OT_broom_constraint_naming(Operator):
     bl_description = "Constraint Naming"
     bl_options = {"REGISTER", "UNDO"}
 
-    rigify: BoolProperty(name="Rigify", default=True)
+    rigify: BoolProperty(name="Rigify", default=False)
 
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:
@@ -33,7 +33,7 @@ class VIEW3D_OT_broom_constraint_shrink_panel(Operator):
     bl_description = "Constraint Shrink Panel"
     bl_options = {"REGISTER", "UNDO"}
 
-    rigify: BoolProperty(name="Rigify", default=True)
+    rigify: BoolProperty(name="Rigify", default=False)
 
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:

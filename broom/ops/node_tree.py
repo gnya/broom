@@ -14,7 +14,7 @@ from broom.utils import override
 
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import OperatorReturnItems
-    from bpy.types import Context
+    from bpy.types import Context, Event
 
 
 class VIEW3D_OT_broom_node_tree_show_users(Operator):
@@ -25,6 +25,7 @@ class VIEW3D_OT_broom_node_tree_show_users(Operator):
 
     node_tree_name: StringProperty(name="NodeTree Name")
 
+    # TODO リンクされたNodeTreeに対応する
     node_tree_library: StringProperty(name="NodeTree Library")
 
     @override
@@ -39,6 +40,16 @@ class VIEW3D_OT_broom_node_tree_show_users(Operator):
         node_tree_show_users(node_tree, self.report)
 
         return {"FINISHED"}
+
+    @override
+    def invoke(self, context: Context, event: Event) -> set[OperatorReturnItems]:
+        return context.window_manager.invoke_props_dialog(self)
+
+    @override
+    def draw(self, context: Context):
+        layout = self.layout
+
+        layout.prop_search(self, "node_tree_name", bpy.data, "node_groups")
 
 
 class VIEW3D_OT_broom_node_tree_align_grid(Operator):

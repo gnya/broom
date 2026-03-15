@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from bpy.types import Panel
 from broom.ops import (
+    VIEW3D_OT_broom_armature_show_unused_bones,
     VIEW3D_OT_broom_constraint_naming,
     VIEW3D_OT_broom_constraint_shrink_panel,
     VIEW3D_OT_broom_mesh_naming,
@@ -42,9 +43,8 @@ class VIEW3D_PT_broom(Panel):
             VIEW3D_OT_broom_modifier_shrink_panel.bl_idname,
             text="Shrink Panel",
         )
-        layout.operator_menu_enum(
+        layout.operator(
             VIEW3D_OT_broom_modifier_subsurf_uv_smooth.bl_idname,
-            "uv_smooth",
             text="Subsurf UV Smooth",
         )
 
@@ -90,4 +90,12 @@ class VIEW3D_PT_broom(Panel):
         layout.operator(
             VIEW3D_OT_broom_mesh_show_unused_materials.bl_idname,
             text="Unused Materials",
+        )
+
+        layout.separator()
+
+        layout.label(text="Armature", icon="ARMATURE_DATA")
+        layout.operator(
+            VIEW3D_OT_broom_armature_show_unused_bones.bl_idname,
+            text="Show Unused Bones",
         )

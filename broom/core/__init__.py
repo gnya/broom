@@ -1,3 +1,4 @@
+from .armature import armature_show_unused_bones
 from .constraint import constraint_naming, constraint_shrink_panel
 from .mesh import (
     mesh_naming,
@@ -29,4 +30,5 @@ __all__ = [
     mesh_naming,
     mesh_show_unused_materials,
     mesh_show_unused_vertex_groups,
+    armature_show_unused_bones,
 ]

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 def constraint_shrink_panel(rigify: bool, report: Report = print):
-    for constraint in constraint_itr(rigify):
+    for constraint in constraint_itr(rigify=rigify):
         if constraint.show_expanded:
             report(
                 {"INFO"},
@@ -23,7 +23,7 @@ def constraint_shrink_panel(rigify: bool, report: Report = print):
 
 
 def constraint_naming(rigify: bool, report: Report = print):
-    for constraint in constraint_itr(rigify):
+    for constraint in constraint_itr(rigify=rigify):
         name = constraint.type
         subnames = []
 

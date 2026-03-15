@@ -1,5 +1,6 @@
 from .driver import has_driver
 from .iterator import (
+    armature_itr,
     constraint_itr,
     id_node_tree_user_itr,
     modifier_itr,
@@ -23,4 +24,5 @@ __all__ = [
     node_abs_location,
     node_connection_itr,
     object_itr,
+    armature_itr,
 ]
