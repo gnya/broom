@@ -2,20 +2,21 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bpy.types import Operator
 from broom.core import constraint_naming, constraint_shrink_panel
 from broom.utils import override
+
+from .base import BroomOperator
 
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import OperatorReturnItems
     from bpy.types import Context
 
 
-class VIEW3D_OT_broom_constraint_naming(Operator):
-    bl_idname = "view3d.broom_constraint_naming"
+class CONSTRAINT_OT_broom_naming(BroomOperator):
+    broom_domain = "constraint"
+    broom_name = "naming"
     bl_label = "Constraint Naming"
     bl_description = "Constraint Naming"
-    bl_options = {"REGISTER", "UNDO"}
 
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:
@@ -24,11 +25,11 @@ class VIEW3D_OT_broom_constraint_naming(Operator):
         return {"FINISHED"}
 
 
-class VIEW3D_OT_broom_constraint_shrink_panel(Operator):
-    bl_idname = "view3d.broom_constraint_shrink_panel"
+class CONSTRAINT_OT_broom_shrink_panel(BroomOperator):
+    broom_domain = "constraint"
+    broom_name = "shrink_panel"
     bl_label = "Constraint Shrink Panel"
     bl_description = "Constraint Shrink Panel"
-    bl_options = {"REGISTER", "UNDO"}
 
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:

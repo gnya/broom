@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import bpy
-from bpy.props import BoolProperty, StringProperty
-from bpy.types import Operator
+from bpy.props import BoolProperty, PointerProperty
+from bpy.types import NodeTree
 from broom.core import (
     node_tree_align_grid,
     node_tree_hide_unused_sockets,
@@ -12,32 +11,22 @@ from broom.core import (
 )
 from broom.utils import override
 
+from .base import BroomOperator
+
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import OperatorReturnItems
     from bpy.types import Context, Event
 
 
-class VIEW3D_OT_broom_node_tree_show_users(Operator):
-    bl_idname = "view3d.broom_node_tree_show_users"
+class NODE_TREE_OT_broom_show_users(BroomOperator):
+    broom_domain = "node_tree"
+    broom_name = "show_users"
     bl_label = "Node Tree Show Users"
     bl_description = "Node Tree Show Users"
-    bl_options = {"REGISTER", "UNDO"}
-
-    node_tree_name: StringProperty(name="Node Tree Name")
-
-    # TODO リンクされたNodeTreeに対応する
-    node_tree_library: StringProperty(name="Node Tree Library")
 
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:
-        if self.node_tree_library == "":
-            node_tree = bpy.data.node_groups.get(self.node_tree_name, None)
-        else:
-            node_tree = bpy.data.node_groups.get(
-                (self.node_tree_name, self.node_tree_library)
-            )
-
-        node_tree_show_users(node_tree, self.report)
+        node_tree_show_users(self.get_prop(context, "node_tree"), self.report)
 
         return {"FINISHED"}
 
@@ -49,14 +38,24 @@ class VIEW3D_OT_broom_node_tree_show_users(Operator):
     def draw(self, context: Context):
         layout = self.layout
 
-        layout.prop_search(self, "node_tree_name", bpy.data, "node_groups")
+        layout.prop(*self.prop_ptr(context, "node_tree"))
+
+    @classmethod
+    def register(cls):
+        cls.register_prop(
+            "node_tree",
+            PointerProperty(
+                type=NodeTree,
+                name="Node Tree",
+            ),
+        )
 
 
-class VIEW3D_OT_broom_node_tree_align_grid(Operator):
-    bl_idname = "view3d.broom_node_tree_align_grid"
+class NODE_TREE_OT_broom_align_grid(BroomOperator):
+    broom_domain = "node_tree"
+    broom_name = "align_grid"
     bl_label = "Node Tree Align Grid"
     bl_description = "Node Tree Align Grid"
-    bl_options = {"REGISTER", "UNDO"}
 
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:
@@ -65,17 +64,15 @@ class VIEW3D_OT_broom_node_tree_align_grid(Operator):
         return {"FINISHED"}
 
 
-class VIEW3D_OT_broom_node_tree_hide_unused_sockets(Operator):
-    bl_idname = "view3d.broom_node_tree_hide_unused_sockets"
+class NODE_TREE_OT_broom_hide_unused_sockets(BroomOperator):
+    broom_domain = "node_tree"
+    broom_name = "hide_unused_sockets"
     bl_label = "Node Tree Hide Unused Sockets"
     bl_description = "Node Tree Hide Unused Sockets"
-    bl_options = {"REGISTER", "UNDO"}
-
-    input_only: BoolProperty(name="Input Only", default=True)
 
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:
-        node_tree_hide_unused_sockets(self.input_only, self.report)
+        node_tree_hide_unused_sockets(self.get_prop(context, "input_only"), self.report)
 
         return {"FINISHED"}
 
@@ -87,4 +84,14 @@ class VIEW3D_OT_broom_node_tree_hide_unused_sockets(Operator):
     def draw(self, context: Context):
         layout = self.layout
 
-        layout.prop(self, "input_only")
+        layout.prop(*self.prop_ptr(context, "input_only"))
+
+    @classmethod
+    def register(cls):
+        cls.register_prop(
+            "input_only",
+            BoolProperty(
+                name="Input Only",
+                default=True,
+            ),
+        )

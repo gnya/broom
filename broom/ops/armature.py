@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from bpy.props import EnumProperty, StringProperty
-from bpy.types import Operator
 from broom.core import (
     armature_rotation_mode,
     armature_rotation_mode_items,
@@ -11,16 +10,18 @@ from broom.core import (
 )
 from broom.utils import override
 
+from .base import BroomOperator
+
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import OperatorReturnItems
     from bpy.types import Context, Event
 
 
-class VIEW3D_OT_broom_armature_show_unused_bones(Operator):
-    bl_idname = "view3d.broom_armature_show_unused_bones"
+class ARMATURE_OT_broom_show_unused_bones(BroomOperator):
+    broom_domain = "armature"
+    broom_name = "show_unused_bones"
     bl_label = "Armature Show Unused Bones"
     bl_description = "Armature Show Unused Bones"
-    bl_options = {"REGISTER", "UNDO"}
 
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:
@@ -29,21 +30,19 @@ class VIEW3D_OT_broom_armature_show_unused_bones(Operator):
         return {"FINISHED"}
 
 
-class VIEW3D_OT_broom_armature_rotation_mode(Operator):
-    bl_idname = "view3d.broom_armature_rotation_mode"
+class ARMATURE_OT_broom_rotation_mode(BroomOperator):
+    broom_domain = "armature"
+    broom_name = "rotation_mode"
     bl_label = "Armature Rotation Mode"
     bl_description = "Armature Rotation Mode"
-    bl_options = {"REGISTER", "UNDO"}
-
-    rotation_mode: EnumProperty(
-        name="Rotation Mode", items=armature_rotation_mode_items(), default="XYZ"
-    )
-
-    exclude_pattern: StringProperty(name="Exclude Pattern", default="(ORG|MCH|DEF|VIS)")
 
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:
-        armature_rotation_mode(self.rotation_mode, self.exclude_pattern, self.report)
+        armature_rotation_mode(
+            self.get_prop(context, "rotation_mode"),
+            self.get_prop(context, "exclude_pattern"),
+            self.report,
+        )
 
         return {"FINISHED"}
 
@@ -55,5 +54,24 @@ class VIEW3D_OT_broom_armature_rotation_mode(Operator):
     def draw(self, context: Context):
         layout = self.layout
 
-        layout.prop(self, "rotation_mode")
-        layout.prop(self, "exclude_pattern")
+        layout.prop(*self.prop_ptr(context, "rotation_mode"))
+        layout.prop(*self.prop_ptr(context, "exclude_pattern"))
+
+    @classmethod
+    def register(cls):
+        cls.register_prop(
+            "rotation_mode",
+            EnumProperty(
+                name="Rotation Mode",
+                items=armature_rotation_mode_items(),
+                default="XYZ",
+            ),
+        )
+
+        cls.register_prop(
+            "exclude_pattern",
+            StringProperty(
+                name="Exclude Pattern",
+                default="(ORG|MCH|DEF|VIS)",
+            ),
+        )

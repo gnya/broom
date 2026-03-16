@@ -1,51 +1,59 @@
 from .armature import (
-    VIEW3D_OT_broom_armature_rotation_mode,
-    VIEW3D_OT_broom_armature_show_unused_bones,
+    ARMATURE_OT_broom_rotation_mode,
+    ARMATURE_OT_broom_show_unused_bones,
 )
-from .constraint import (
-    VIEW3D_OT_broom_constraint_naming,
-    VIEW3D_OT_broom_constraint_shrink_panel,
-)
+from .base import BroomOperator
+from .constraint import CONSTRAINT_OT_broom_naming, CONSTRAINT_OT_broom_shrink_panel
 from .mesh import (
-    VIEW3D_OT_broom_mesh_naming,
-    VIEW3D_OT_broom_mesh_show_dirty_transforms,
-    VIEW3D_OT_broom_mesh_show_unused_materials,
-    VIEW3D_OT_broom_mesh_unused_vertex_groups,
+    MESH_OT_broom_naming,
+    MESH_OT_broom_show_dirty_transforms,
+    MESH_OT_broom_show_unused_materials,
+    MESH_OT_broom_show_unused_vertex_groups,
 )
 from .modifier import (
-    VIEW3D_OT_broom_modifier_naming,
-    VIEW3D_OT_broom_modifier_shrink_panel,
-    VIEW3D_OT_broom_modifier_subsurf_uv_smooth,
+    MODIFIER_OT_broom_naming,
+    MODIFIER_OT_broom_shrink_panel,
+    MODIFIER_OT_broom_subsurf_uv_smooth,
 )
 from .node_tree import (
-    VIEW3D_OT_broom_node_tree_align_grid,
-    VIEW3D_OT_broom_node_tree_hide_unused_sockets,
-    VIEW3D_OT_broom_node_tree_show_users,
+    NODE_TREE_OT_broom_align_grid,
+    NODE_TREE_OT_broom_hide_unused_sockets,
+    NODE_TREE_OT_broom_show_users,
 )
+from .outliner import OUTLINER_OT_broom_orphans_purge
+
+__all__ = [BroomOperator]
 
 classes = (
-    VIEW3D_OT_broom_modifier_subsurf_uv_smooth,
-    VIEW3D_OT_broom_modifier_naming,
-    VIEW3D_OT_broom_modifier_shrink_panel,
-    VIEW3D_OT_broom_constraint_naming,
-    VIEW3D_OT_broom_constraint_shrink_panel,
-    VIEW3D_OT_broom_node_tree_show_users,
-    VIEW3D_OT_broom_node_tree_align_grid,
-    VIEW3D_OT_broom_node_tree_hide_unused_sockets,
-    VIEW3D_OT_broom_mesh_naming,
-    VIEW3D_OT_broom_mesh_unused_vertex_groups,
-    VIEW3D_OT_broom_mesh_show_unused_materials,
-    VIEW3D_OT_broom_armature_show_unused_bones,
-    VIEW3D_OT_broom_mesh_show_dirty_transforms,
-    VIEW3D_OT_broom_armature_rotation_mode,
+    MODIFIER_OT_broom_subsurf_uv_smooth,
+    MODIFIER_OT_broom_naming,
+    MODIFIER_OT_broom_shrink_panel,
+    CONSTRAINT_OT_broom_naming,
+    CONSTRAINT_OT_broom_shrink_panel,
+    NODE_TREE_OT_broom_show_users,
+    NODE_TREE_OT_broom_align_grid,
+    NODE_TREE_OT_broom_hide_unused_sockets,
+    MESH_OT_broom_naming,
+    MESH_OT_broom_show_unused_vertex_groups,
+    MESH_OT_broom_show_unused_materials,
+    ARMATURE_OT_broom_show_unused_bones,
+    MESH_OT_broom_show_dirty_transforms,
+    ARMATURE_OT_broom_rotation_mode,
+    OUTLINER_OT_broom_orphans_purge,
 )
 
 
 def register():
     from bpy.utils import register_class
 
+    from .base import post_register, pre_register
+
+    pre_register(classes)
+
     for cls in classes:
         register_class(cls)
+
+    post_register(classes)
 
 
 def unregister():

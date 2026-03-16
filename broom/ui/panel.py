@@ -4,25 +4,55 @@ from typing import TYPE_CHECKING
 
 from bpy.types import Panel
 from broom.ops import (
-    VIEW3D_OT_broom_armature_rotation_mode,
-    VIEW3D_OT_broom_armature_show_unused_bones,
-    VIEW3D_OT_broom_constraint_naming,
-    VIEW3D_OT_broom_constraint_shrink_panel,
-    VIEW3D_OT_broom_mesh_naming,
-    VIEW3D_OT_broom_mesh_show_dirty_transforms,
-    VIEW3D_OT_broom_mesh_show_unused_materials,
-    VIEW3D_OT_broom_mesh_unused_vertex_groups,
-    VIEW3D_OT_broom_modifier_naming,
-    VIEW3D_OT_broom_modifier_shrink_panel,
-    VIEW3D_OT_broom_modifier_subsurf_uv_smooth,
-    VIEW3D_OT_broom_node_tree_align_grid,
-    VIEW3D_OT_broom_node_tree_hide_unused_sockets,
-    VIEW3D_OT_broom_node_tree_show_users,
+    ARMATURE_OT_broom_rotation_mode,
+    ARMATURE_OT_broom_show_unused_bones,
+    BroomOperator,
+    CONSTRAINT_OT_broom_naming,
+    CONSTRAINT_OT_broom_shrink_panel,
+    MESH_OT_broom_naming,
+    MESH_OT_broom_show_dirty_transforms,
+    MESH_OT_broom_show_unused_materials,
+    MESH_OT_broom_show_unused_vertex_groups,
+    MODIFIER_OT_broom_naming,
+    MODIFIER_OT_broom_shrink_panel,
+    MODIFIER_OT_broom_subsurf_uv_smooth,
+    NODE_TREE_OT_broom_align_grid,
+    NODE_TREE_OT_broom_hide_unused_sockets,
+    NODE_TREE_OT_broom_show_users,
+    OUTLINER_OT_broom_orphans_purge,
 )
+from broom.props import BroomSettings
 from broom.utils import override
 
 if TYPE_CHECKING:
-    from bpy.types import Context
+    from bpy.types import Context, UILayout
+
+
+def _draw_operator(
+    layout: UILayout,
+    type: type[BroomOperator],
+    settings: BroomSettings,
+    name: str = "",
+    prop_names: dict[str, str] = {},
+):
+    if settings.view_mode == "SINGLE":
+        layout.operator(type.bl_idname, text=name)
+    elif settings.view_mode == "BATCH":
+        layout.row(align=True)
+        layout.prop(settings, type.broom_name_full, text=name)
+
+        if len(type.broom_props.items()) > 0:
+            row = layout.row(align=True)
+            row.separator(factor=3.0)
+            col = row.column(align=True)
+
+            for prop, prop_full in type.broom_props.items():
+                if prop in prop_names:
+                    prop_name = prop_names[prop]
+                else:
+                    prop_name = prop.replace("_", " ").title()
+
+                col.prop(settings, prop_full, text=prop_name)
 
 
 class VIEW3D_PT_broom(Panel):
@@ -36,78 +66,119 @@ class VIEW3D_PT_broom(Panel):
     def draw(self, context: Context):
         layout = self.layout
 
-        column = layout.column(align=True)
-        column.label(text="Blender File", icon="BLENDER")
-        o = column.operator("outliner.orphans_purge", text="Orphans Purge")
-        o.do_recursive = True
+        settings = BroomSettings.instance(context.scene)
 
-        column = layout.column(align=True)
-        column.label(text="Modifier", icon="MODIFIER")
-        column.operator(
-            VIEW3D_OT_broom_modifier_naming.bl_idname,
-            text="Naming",
-        )
-        column.operator(
-            VIEW3D_OT_broom_modifier_shrink_panel.bl_idname,
-            text="Shrink Panel",
-        )
-        column.operator(
-            VIEW3D_OT_broom_modifier_subsurf_uv_smooth.bl_idname,
-            text="Subsurf UV Smooth",
+        layout.prop(settings, "view_mode", expand=True)
+
+        col = layout.column(align=True)
+        col.label(text="Blender File", icon="BLENDER")
+        _draw_operator(
+            col,
+            OUTLINER_OT_broom_orphans_purge,
+            settings,
+            "Orphans Purge",
         )
 
-        column = layout.column(align=True)
-        column.label(text="Constraint", icon="CONSTRAINT")
-        column.operator(
-            VIEW3D_OT_broom_constraint_naming.bl_idname,
-            text="Naming",
+        col = layout.column(align=True)
+        col.label(text="Modifier", icon="MODIFIER")
+        _draw_operator(
+            col,
+            MODIFIER_OT_broom_naming,
+            settings,
+            "Naming",
         )
-        column.operator(
-            VIEW3D_OT_broom_constraint_shrink_panel.bl_idname,
-            text="Shrink Panel",
+        _draw_operator(
+            col,
+            MODIFIER_OT_broom_shrink_panel,
+            settings,
+            "Shrink Panel",
         )
-
-        column = layout.column(align=True)
-        column.label(text="Node Tree", icon="NODE")
-        column.operator(
-            VIEW3D_OT_broom_node_tree_show_users.bl_idname,
-            text="Show Users",
-        )
-        column.operator(
-            VIEW3D_OT_broom_node_tree_align_grid.bl_idname,
-            text="Align Grid",
-        )
-        column.operator(
-            VIEW3D_OT_broom_node_tree_hide_unused_sockets.bl_idname,
-            text="Hide Unused Sockets",
+        _draw_operator(
+            col,
+            MODIFIER_OT_broom_subsurf_uv_smooth,
+            settings,
+            "Subsurf UV Smooth",
+            {"uv_smooth": ""},
         )
 
-        column = layout.column(align=True)
-        column.label(text="Mesh", icon="MESH_DATA")
-        column.operator(
-            VIEW3D_OT_broom_mesh_naming.bl_idname,
-            text="Naming",
+        col = layout.column(align=True)
+        col.label(text="Constraint", icon="CONSTRAINT")
+        _draw_operator(
+            col,
+            CONSTRAINT_OT_broom_naming,
+            settings,
+            "Naming",
         )
-        column.operator(
-            VIEW3D_OT_broom_mesh_unused_vertex_groups.bl_idname,
-            text="Unused Vertex Groups",
-        )
-        column.operator(
-            VIEW3D_OT_broom_mesh_show_unused_materials.bl_idname,
-            text="Unused Materials",
-        )
-        column.operator(
-            VIEW3D_OT_broom_mesh_show_dirty_transforms.bl_idname,
-            text="Dirty Transforms",
+        _draw_operator(
+            col,
+            CONSTRAINT_OT_broom_shrink_panel,
+            settings,
+            "Shrink Panel",
         )
 
-        column = layout.column(align=True)
-        column.label(text="Armature", icon="ARMATURE_DATA")
-        column.operator(
-            VIEW3D_OT_broom_armature_show_unused_bones.bl_idname,
-            text="Show Unused Bones",
+        col = layout.column(align=True)
+        col.label(text="Node Tree", icon="NODE")
+        _draw_operator(
+            col,
+            NODE_TREE_OT_broom_show_users,
+            settings,
+            "Show Users",
+            {"node_tree": ""},
         )
-        column.operator(
-            VIEW3D_OT_broom_armature_rotation_mode.bl_idname,
-            text="Rotation Mode",
+        _draw_operator(
+            col,
+            NODE_TREE_OT_broom_align_grid,
+            settings,
+            "Align Grid",
+        )
+        _draw_operator(
+            col,
+            NODE_TREE_OT_broom_hide_unused_sockets,
+            settings,
+            "Hide Unused Sockets",
+            {"input_only": "Input Only"},
+        )
+
+        col = layout.column(align=True)
+        col.label(text="Mesh", icon="MESH_DATA")
+        _draw_operator(
+            col,
+            MESH_OT_broom_naming,
+            settings,
+            "Naming",
+        )
+        _draw_operator(
+            col,
+            MESH_OT_broom_show_unused_vertex_groups,
+            settings,
+            "Unused Vertex Groups",
+        )
+        _draw_operator(
+            col,
+            MESH_OT_broom_show_unused_materials,
+            settings,
+            "Unused Materials",
+        )
+        _draw_operator(
+            col,
+            MESH_OT_broom_show_dirty_transforms,
+            settings,
+            "Dirty Transforms",
+            {"exclude_pattern": ""},
+        )
+
+        col = layout.column(align=True)
+        col.label(text="Armature", icon="ARMATURE_DATA")
+        _draw_operator(
+            col,
+            ARMATURE_OT_broom_show_unused_bones,
+            settings,
+            "Show Unused Bones",
+        )
+        _draw_operator(
+            col,
+            ARMATURE_OT_broom_rotation_mode,
+            settings,
+            "Rotation Mode",
+            {"rotation_mode": "", "exclude_pattern": ""},
         )
