@@ -1,6 +1,6 @@
-from .prop import BroomSettings
+from .prop import BroomSettings, BroomTemp
 
-classes = (BroomSettings,)
+classes = (BroomSettings, BroomTemp)
 
 
 def register():

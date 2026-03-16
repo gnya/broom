@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING, Any
 
 from bpy.props import BoolProperty
 from bpy.types import Operator
-from broom.props import BroomSettings
+from broom.props import BroomSettings, BroomTemp
 
 if TYPE_CHECKING:
-    from bpy.types import Context
+    from bpy.types import Context, PropertyGroup
 
 
 class BroomOperator(Operator):
@@ -20,27 +20,26 @@ class BroomOperator(Operator):
     broom_name_full: str = ""
     broom_props: dict[str, str] = {}
 
-    def prop_ptr(self, context: Context, name: str) -> tuple[BroomSettings, str]:
-        return (
-            BroomSettings.instance(context.scene),
-            f"{self.broom_name_full}_{name}",
-        )
+    def prop_ptr(self, context: Context, name: str) -> tuple[PropertyGroup, str]:
+        settings = BroomSettings.instance(context.scene)
+        prop_full = f"{self.broom_name_full}_{name}"
+
+        if settings.view_mode == "SINGLE":
+            return BroomTemp.instance(), prop_full
+        elif settings.view_mode == "BATCH":
+            return settings, prop_full
+        else:
+            raise ValueError(f"Unknown view mode. : {settings.view_mode}")
 
     def get_prop(self, context: Context, name: str) -> Any:
         return getattr(*self.prop_ptr(context, name))
 
     @classmethod
-    def register(cls):
-        setattr(
-            BroomSettings,
-            cls.broom_name_full,
-            BoolProperty(name=f"Enable {cls.bl_label}", default=False),
-        )
-
-    @classmethod
     def register_prop(cls, name: str, property: Any):
-        cls.broom_props[name] = f"{cls.broom_name_full}_{name}"
-        setattr(BroomSettings, cls.broom_props[name], property)
+        prop_full = f"{cls.broom_name_full}_{name}"
+        cls.broom_props[name] = prop_full
+        setattr(BroomTemp, prop_full, property)
+        setattr(BroomSettings, prop_full, property)
 
 
 def pre_register(ops: list[type[BroomOperator]]):
@@ -69,6 +68,7 @@ def post_register(ops: list[type[BroomOperator]]):
             f"{operator.broom_domain}_{operator.broom_name}",
             BoolProperty(
                 name=f"Enable {operator.bl_label}",
+                description=f"Enable {operator.bl_label}".capitalize(),
                 default=False,
             ),
         )
