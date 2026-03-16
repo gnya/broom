@@ -38,13 +38,13 @@ def _draw_operator(
     if settings.view_mode == "SINGLE":
         layout.operator(type.bl_idname, text=name)
     elif settings.view_mode == "BATCH":
-        layout.row(align=True)
-        layout.prop(settings, type.broom_name_full, text=name)
+        col = layout.box().column(align=True)
+        col.prop(settings, type.broom_name_full, text=name)
 
         if len(type.broom_props.items()) > 0:
-            row = layout.row(align=True)
+            row = col.row(align=True)
             row.separator(factor=3.0)
-            col = row.column(align=True)
+            sub_col = row.column(align=True)
 
             for prop, prop_full in type.broom_props.items():
                 if prop in prop_names:
@@ -52,7 +52,7 @@ def _draw_operator(
                 else:
                     prop_name = prop.replace("_", " ").title()
 
-                col.prop(settings, prop_full, text=prop_name)
+                sub_col.prop(settings, prop_full, text=prop_name)
 
 
 class VIEW3D_PT_broom(Panel):
@@ -64,10 +64,9 @@ class VIEW3D_PT_broom(Panel):
 
     @override
     def draw(self, context: Context):
-        layout = self.layout
-
         settings = BroomSettings.instance(context.scene)
 
+        layout = self.layout
         layout.prop(settings, "view_mode", expand=True)
 
         col = layout.column(align=True)
