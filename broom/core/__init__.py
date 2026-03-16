@@ -1,7 +1,12 @@
-from .armature import armature_show_unused_bones
+from .armature import (
+    armature_rotation_mode,
+    armature_rotation_mode_items,
+    armature_show_unused_bones,
+)
 from .constraint import constraint_naming, constraint_shrink_panel
 from .mesh import (
     mesh_naming,
+    mesh_show_dirty_transforms,
     mesh_show_unused_materials,
     mesh_show_unused_vertex_groups,
 )
@@ -31,4 +36,7 @@ __all__ = [
     mesh_show_unused_materials,
     mesh_show_unused_vertex_groups,
     armature_show_unused_bones,
+    mesh_show_dirty_transforms,
+    armature_rotation_mode,
+    armature_rotation_mode_items,
 ]

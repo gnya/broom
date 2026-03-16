@@ -24,7 +24,7 @@ def modifier_shrink_panel(report: Report = print):
         if modifier.show_expanded:
             report(
                 {"INFO"},
-                f"Shrink modifier panel. {modifier.id_data.name} : {modifier.name}",
+                f"Shrink modifier panel. : {modifier.id_data.name} {modifier.name}",
             )
             modifier.show_expanded = False
 
@@ -38,7 +38,7 @@ def modifier_subsurf_uv_smooth(type: SubdivisionUvSmoothItems, report: Report = 
         if modifier.uv_smooth != type:
             report(
                 {"INFO"},
-                f"Change uv_smooth settings. {modifier.id_data.name} : {modifier.name} ({type})",
+                f"Change uv_smooth settings. : {modifier.id_data.name} {modifier.name} ({type})",
             )
             modifier.uv_smooth = type
 
@@ -84,6 +84,6 @@ def modifier_naming(report: Report = print):
         if name != modifier.name:
             report(
                 {"INFO"},
-                f"Rename modifier. {modifier.id_data.name} : `{modifier.name}` to `{name}`",
+                f"Rename modifier. : {modifier.id_data.name} `{modifier.name}` to `{name}`",
             )
             modifier.name = name

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING, Callable
 
 from broom.utils import object_itr, parse_nodes_modifier_io
@@ -130,3 +131,14 @@ def mesh_show_unused_materials(report: Report = print):
                         {"INFO"},
                         f"Unused material slot found. : {mesh.name} {material.name}",
                     )
+
+
+def mesh_show_dirty_transforms(exclude_pattern: str, report: Report = print):
+    for mesh in object_itr("MESH"):
+        if not mesh.matrix_basis.is_identity and (
+            exclude_pattern == "" or not re.search(exclude_pattern, mesh.name)
+        ):
+            report(
+                {"INFO"},
+                f"Dirty transform mesh found. : {mesh.name}",
+            )

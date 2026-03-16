@@ -1,10 +1,14 @@
-from .armature import VIEW3D_OT_broom_armature_show_unused_bones
+from .armature import (
+    VIEW3D_OT_broom_armature_rotation_mode,
+    VIEW3D_OT_broom_armature_show_unused_bones,
+)
 from .constraint import (
     VIEW3D_OT_broom_constraint_naming,
     VIEW3D_OT_broom_constraint_shrink_panel,
 )
 from .mesh import (
     VIEW3D_OT_broom_mesh_naming,
+    VIEW3D_OT_broom_mesh_show_dirty_transforms,
     VIEW3D_OT_broom_mesh_show_unused_materials,
     VIEW3D_OT_broom_mesh_unused_vertex_groups,
 )
@@ -32,6 +36,8 @@ classes = (
     VIEW3D_OT_broom_mesh_unused_vertex_groups,
     VIEW3D_OT_broom_mesh_show_unused_materials,
     VIEW3D_OT_broom_armature_show_unused_bones,
+    VIEW3D_OT_broom_mesh_show_dirty_transforms,
+    VIEW3D_OT_broom_armature_rotation_mode,
 )
 
 

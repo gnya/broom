@@ -1,15 +1,26 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any, Callable, Literal
 
-from broom.utils import armature_itr, object_itr
+from broom.utils import armature_itr, enum_to_items, object_itr
 
 if TYPE_CHECKING:
-    from bpy._typing.rna_enums import WmReportItems
+    from bpy._typing.rna_enums import ObjectRotationModeItems, WmReportItems
     from bpy.types import ID, Armature, Constraint, Driver, Modifier, Object
 
     Report = Callable[[set[WmReportItems] | None, str], None]
+else:
+    ObjectRotationModeItems = Literal[
+        "QUATERNION",
+        "XYZ",
+        "XZY",
+        "YXZ",
+        "YZX",
+        "ZXY",
+        "ZYX",
+        "AXIS_ANGLE",
+    ]
 
 
 def _get_object_data(data: Any, prop: str) -> ID | None:
@@ -139,3 +150,22 @@ def armature_show_unused_bones(report: Report = print):
                     {"INFO"},
                     f"Unused bone found. : {armature.name} {bone.name}",
                 )
+
+
+def armature_rotation_mode_items() -> list[tuple[str, str, str]]:
+    return enum_to_items(ObjectRotationModeItems)
+
+
+def armature_rotation_mode(
+    rotation_mode: ObjectRotationModeItems, exclude_pattern: str, report: Report = print
+):
+    for armature in object_itr("ARMATURE"):
+        for bone in armature.pose.bones:
+            if bone.rotation_mode != rotation_mode and (
+                exclude_pattern == "" or not re.search(exclude_pattern, bone.name)
+            ):
+                report(
+                    {"INFO"},
+                    f"Change rotation mode. : {armature.name} {bone.name}",
+                )
+                bone.rotation_mode = rotation_mode

@@ -27,15 +27,13 @@ def modifier_itr(type: ObjectModifierTypeItems | None = None) -> Iterator[Modifi
                 yield modifier
 
 
-def constraint_itr(
-    type: ConstraintTypeItems | None = None, rigify: bool = True
-) -> Iterator[Constraint]:
+def constraint_itr(type: ConstraintTypeItems | None = None) -> Iterator[Constraint]:
     for obj in bpy.data.objects:
         for constraint in obj.constraints:
             if type is None or constraint.type == type:
                 yield constraint
 
-        if obj.type == "ARMATURE" and (rigify or "rig_ui" not in obj.keys()):
+        if obj.type == "ARMATURE":
             for bone in obj.pose.bones:
                 for constraint in bone.constraints:
                     if type is None or constraint.type == type:

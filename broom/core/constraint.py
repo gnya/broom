@@ -12,18 +12,18 @@ if TYPE_CHECKING:
     Report = Callable[[set[WmReportItems] | None, str], None]
 
 
-def constraint_shrink_panel(rigify: bool, report: Report = print):
-    for constraint in constraint_itr(rigify=rigify):
+def constraint_shrink_panel(report: Report = print):
+    for constraint in constraint_itr():
         if constraint.show_expanded:
             report(
                 {"INFO"},
-                f"Shrink constraint panel. {constraint.id_data.name} : {constraint.name}",
+                f"Shrink constraint panel. : {constraint.id_data.name} {constraint.name}",
             )
             constraint.show_expanded = False
 
 
-def constraint_naming(rigify: bool, report: Report = print):
-    for constraint in constraint_itr(rigify=rigify):
+def constraint_naming(report: Report = print):
+    for constraint in constraint_itr():
         name = constraint.type
         subnames = []
 
@@ -59,6 +59,6 @@ def constraint_naming(rigify: bool, report: Report = print):
         if name != constraint.name:
             report(
                 {"INFO"},
-                f"Rename constraint. {constraint.id_data.name} : `{constraint.name}` to `{name}`",
+                f"Rename constraint. : {constraint.id_data.name} `{constraint.name}` to `{name}`",
             )
             constraint.name = name

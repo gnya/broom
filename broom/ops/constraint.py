@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bpy.props import BoolProperty
 from bpy.types import Operator
 from broom.core import constraint_naming, constraint_shrink_panel
 from broom.utils import override
@@ -18,11 +17,9 @@ class VIEW3D_OT_broom_constraint_naming(Operator):
     bl_description = "Constraint Naming"
     bl_options = {"REGISTER", "UNDO"}
 
-    rigify: BoolProperty(name="Rigify", default=False)
-
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:
-        constraint_naming(self.rigify, self.report)
+        constraint_naming(self.report)
 
         return {"FINISHED"}
 
@@ -33,10 +30,8 @@ class VIEW3D_OT_broom_constraint_shrink_panel(Operator):
     bl_description = "Constraint Shrink Panel"
     bl_options = {"REGISTER", "UNDO"}
 
-    rigify: BoolProperty(name="Rigify", default=False)
-
     @override
     def execute(self, context: Context) -> set[OperatorReturnItems]:
-        constraint_shrink_panel(self.rigify, self.report)
+        constraint_shrink_panel(self.report)
 
         return {"FINISHED"}
