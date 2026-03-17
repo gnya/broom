@@ -9,7 +9,7 @@ from .base import BroomOperator
 
 if TYPE_CHECKING:
     from bpy._typing.rna_enums import OperatorReturnItems
-    from bpy.types import Context
+    from bpy.types import Context, Event
 
 
 class OUTLINER_OT_broom_orphans_purge(BroomOperator):
@@ -19,5 +19,9 @@ class OUTLINER_OT_broom_orphans_purge(BroomOperator):
     bl_description = "Outliner Orphans Purge"
 
     @override
-    def execute(self, context: Context) -> set[OperatorReturnItems]:
+    def invoke(self, context: Context, event: Event) -> set[OperatorReturnItems]:
         return bpy.ops.outliner.orphans_purge("INVOKE_DEFAULT", do_recursive=True)
+
+    @override
+    def execute(self, context: Context) -> set[OperatorReturnItems]:
+        return bpy.ops.outliner.orphans_purge("EXEC_DEFAULT", do_recursive=True)

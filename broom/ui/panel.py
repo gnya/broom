@@ -68,8 +68,12 @@ class VIEW3D_PT_broom(Panel):
         settings = BroomSettings.instance(context.scene)
 
         layout = self.layout
-        layout.operator(VIEW3D_OT_broom_batch.bl_idname, text="Batch")
-        layout.prop(settings, "view_mode", expand=True)
+
+        col = layout.column()
+        row = col.row(align=True)
+        row.prop(settings, "batch_on_save", text="")
+        row.operator(VIEW3D_OT_broom_batch.bl_idname, text="Batch")
+        col.row().prop(settings, "view_mode", expand=True)
 
         col = layout.column(align=True)
         col.label(text="Blender File", icon="BLENDER")

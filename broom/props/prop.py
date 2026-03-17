@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Literal
 
 import bpy
-from bpy.props import EnumProperty, PointerProperty
+from bpy.props import BoolProperty, EnumProperty, PointerProperty
 from bpy.types import PropertyGroup, Scene, WindowManager
 from broom.utils import enum_to_items
 
@@ -16,6 +16,8 @@ class BroomSettings(PropertyGroup):
     view_mode: EnumProperty(
         items=enum_to_items(BroomViewModeItems), name="View Mode", default="SINGLE"
     )
+
+    batch_on_save: BoolProperty(name="Batch On Save", default=False)
 
     @staticmethod
     def instance(id: Scene) -> BroomSettings:

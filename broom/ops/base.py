@@ -46,6 +46,19 @@ class BroomOperator(Operator):
         setattr(BroomSettings, prop_full, value)
 
 
+def batch(scene: Scene, report: Report = print):
+    settings = BroomSettings.instance(scene)
+
+    for cls in BroomOperator.__subclasses__():
+        if getattr(settings, cls.broom_name_full, False):
+            idname = cls.bl_idname.split(".")
+            operator = getattr(getattr(bpy.ops, idname[0], None), idname[1], None)
+
+            if operator is not None:
+                report({"INFO"}, f"Run operator. : {cls.bl_label}")
+                operator()
+
+
 def pre_register():
     for operator in BroomOperator.__subclasses__():
         if operator.bl_idname == "":
@@ -76,16 +89,3 @@ def post_register():
                 default=False,
             ),
         )
-
-
-def batch(scene: Scene, report: Report = print):
-    settings = BroomSettings.instance(scene)
-
-    for cls in BroomOperator.__subclasses__():
-        if getattr(settings, cls.broom_name_full, False):
-            idname = cls.bl_idname.split(".")
-            operator = getattr(getattr(bpy.ops, idname[0], None), idname[1], None)
-
-            if operator is not None:
-                report({"INFO"}, f"Run operator. : {cls.bl_label}")
-                operator()
