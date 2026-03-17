@@ -36,9 +36,7 @@ def _draw_operator(
     name: str = "",
     prop_names: dict[str, str] = {},
 ):
-    if settings.view_mode == "SINGLE":
-        layout.operator(type.bl_idname, text=name)
-    elif settings.view_mode == "BATCH":
+    if settings.show_settings:
         col = layout.box().column(align=True)
         col.prop(settings, type.broom_name_full, text=name)
 
@@ -54,6 +52,8 @@ def _draw_operator(
                     prop_name = prop.replace("_", " ").title()
 
                 sub_col.prop(settings, prop_full, text=prop_name)
+    else:
+        layout.operator(type.bl_idname, text=name)
 
 
 class VIEW3D_PT_broom(Panel):
@@ -71,9 +71,9 @@ class VIEW3D_PT_broom(Panel):
 
         col = layout.column()
         row = col.row(align=True)
-        row.prop(settings, "batch_on_save", text="")
+        row.prop(settings, "show_settings", text="", icon="SETTINGS")
         row.operator(VIEW3D_OT_broom_batch.bl_idname, text="Batch")
-        col.row().prop(settings, "view_mode", expand=True)
+        row.prop(settings, "batch_on_save", text="", icon="FILE_TICK")
 
         col = layout.column(align=True)
         col.label(text="Blender File", icon="BLENDER")

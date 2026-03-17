@@ -1,21 +1,14 @@
 from __future__ import annotations
 
-from typing import Literal
-
 import bpy
-from bpy.props import BoolProperty, EnumProperty, PointerProperty
+from bpy.props import BoolProperty, PointerProperty
 from bpy.types import PropertyGroup, Scene, WindowManager
-from broom.utils import enum_to_items
-
-BroomViewModeItems = Literal["SINGLE", "BATCH"]
 
 
 class BroomSettings(PropertyGroup):
     PROP_NAME = "broom_settings"
 
-    view_mode: EnumProperty(
-        items=enum_to_items(BroomViewModeItems), name="View Mode", default="SINGLE"
-    )
+    show_settings: BoolProperty(name="Show Settings", default=False)
 
     batch_on_save: BoolProperty(name="Batch On Save", default=False)
 

@@ -28,12 +28,10 @@ class BroomOperator(Operator):
         settings = BroomSettings.instance(context.scene)
         prop_full = f"{self.broom_name_full}_{prop}"
 
-        if settings.view_mode == "SINGLE":
-            return BroomTemp.instance(), prop_full
-        elif settings.view_mode == "BATCH":
+        if settings.show_settings:
             return settings, prop_full
         else:
-            raise ValueError(f"Unknown view mode. : {settings.view_mode}")
+            return BroomTemp.instance(), prop_full
 
     def get_prop(self, context: Context, name: str) -> Any:
         return getattr(*self.prop_ptr(context, name))
