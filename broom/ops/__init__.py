@@ -3,6 +3,7 @@ from .armature import (
     ARMATURE_OT_broom_show_unused_bones,
 )
 from .base import BroomOperator
+from .batch import VIEW3D_OT_broom_batch
 from .constraint import CONSTRAINT_OT_broom_naming, CONSTRAINT_OT_broom_shrink_panel
 from .mesh import (
     MESH_OT_broom_naming,
@@ -40,6 +41,7 @@ classes = (
     MESH_OT_broom_show_dirty_transforms,
     ARMATURE_OT_broom_rotation_mode,
     OUTLINER_OT_broom_orphans_purge,
+    VIEW3D_OT_broom_batch,
 )
 
 
@@ -48,12 +50,12 @@ def register():
 
     from .base import post_register, pre_register
 
-    pre_register(classes)
+    pre_register()
 
     for cls in classes:
         register_class(cls)
 
-    post_register(classes)
+    post_register()
 
 
 def unregister():

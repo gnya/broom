@@ -7,8 +7,10 @@ from .iterator import (
     node_connection_itr,
     node_itr,
     object_itr,
+    pose_bone_itr,
 )
 from .modifier import parse_nodes_modifier_io
+from .naming import unique_name
 from .node import node_abs_location
 from .typing import enum_to_items, override
 
@@ -25,4 +27,6 @@ __all__ = [
     node_connection_itr,
     object_itr,
     armature_itr,
+    unique_name,
+    pose_bone_itr,
 ]

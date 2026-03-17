@@ -20,6 +20,7 @@ from broom.ops import (
     NODE_TREE_OT_broom_hide_unused_sockets,
     NODE_TREE_OT_broom_show_users,
     OUTLINER_OT_broom_orphans_purge,
+    VIEW3D_OT_broom_batch,
 )
 from broom.props import BroomSettings
 from broom.utils import override
@@ -67,6 +68,7 @@ class VIEW3D_PT_broom(Panel):
         settings = BroomSettings.instance(context.scene)
 
         layout = self.layout
+        layout.operator(VIEW3D_OT_broom_batch.bl_idname, text="Batch")
         layout.prop(settings, "view_mode", expand=True)
 
         col = layout.column(align=True)

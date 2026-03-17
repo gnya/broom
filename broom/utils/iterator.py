@@ -11,7 +11,7 @@ if TYPE_CHECKING:
         ObjectModifierTypeItems,
         ObjectTypeItems,
     )
-    from bpy.types import ID, Armature, Constraint, Modifier, Node, Object
+    from bpy.types import ID, Armature, Constraint, Modifier, Node, Object, PoseBone
 
 
 def object_itr(type: ObjectTypeItems | None = None) -> Iterator[Object]:
@@ -20,24 +20,26 @@ def object_itr(type: ObjectTypeItems | None = None) -> Iterator[Object]:
             yield obj
 
 
-def modifier_itr(type: ObjectModifierTypeItems | None = None) -> Iterator[Modifier]:
-    for obj in bpy.data.objects:
-        for modifier in obj.modifiers:
-            if type is None or modifier.type == type:
-                yield modifier
+def modifier_itr(
+    obj: Object, type: ObjectModifierTypeItems | None = None
+) -> Iterator[Modifier]:
+    for modifier in obj.modifiers:
+        if type is None or modifier.type == type:
+            yield modifier
 
 
-def constraint_itr(type: ConstraintTypeItems | None = None) -> Iterator[Constraint]:
-    for obj in bpy.data.objects:
-        for constraint in obj.constraints:
-            if type is None or constraint.type == type:
-                yield constraint
+def pose_bone_itr(obj: Object) -> Iterator[PoseBone]:
+    if obj.type == "ARMATURE":
+        for bone in obj.pose.bones:
+            yield bone
 
-        if obj.type == "ARMATURE":
-            for bone in obj.pose.bones:
-                for constraint in bone.constraints:
-                    if type is None or constraint.type == type:
-                        yield constraint
+
+def constraint_itr(
+    source: Object | PoseBone, type: ConstraintTypeItems | None = None
+) -> Iterator[Constraint]:
+    for constraint in source.constraints:
+        if type is None or constraint.type == type:
+            yield constraint
 
 
 def node_connection_itr(node: Node) -> Iterator[Node]:
