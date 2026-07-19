@@ -3,11 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from bpy.props import StringProperty
+
 from broom.core import (
     mesh_naming,
     mesh_show_dirty_transforms,
     mesh_show_unused_materials,
     mesh_show_unused_vertex_groups,
+    mesh_unselect_vertices,
 )
 from broom.utils import override
 
@@ -90,3 +92,16 @@ class MESH_OT_broom_show_dirty_transforms(BroomOperator):
                 default="(WGT|CUSTOMSHAPE)",
             ),
         )
+
+
+class MESH_OT_broom_unselect_vertices(BroomOperator):
+    broom_domain = "mesh"
+    broom_name = "show_unselect_vertices"
+    bl_label = "Mesh Unselect Vertices"
+    bl_description = "Mesh Unselect Vertices"
+
+    @override
+    def execute(self, context: Context) -> set[OperatorReturnItems]:
+        mesh_unselect_vertices(self.report)
+
+        return {"FINISHED"}

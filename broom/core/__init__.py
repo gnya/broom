@@ -9,6 +9,7 @@ from .mesh import (
     mesh_show_dirty_transforms,
     mesh_show_unused_materials,
     mesh_show_unused_vertex_groups,
+    mesh_unselect_vertices,
 )
 from .modifier import (
     modifier_naming,
@@ -35,6 +36,7 @@ __all__ = [
     mesh_naming,
     mesh_show_unused_materials,
     mesh_show_unused_vertex_groups,
+    mesh_unselect_vertices,
     armature_show_unused_bones,
     mesh_show_dirty_transforms,
     armature_rotation_mode,

@@ -34,7 +34,7 @@ def constraint_shrink_panel(report: Report = print):
         _shrink_panel(obj, report)
 
         for bone in pose_bone_itr(obj):
-            _shrink_panel(bone)
+            _shrink_panel(bone, report)
 
 
 def _naming(source: Object | PoseBone, report: Report = print):
@@ -90,4 +90,4 @@ def constraint_naming(report: Report = print):
         _naming(obj, report)
 
         for bone in pose_bone_itr(obj):
-            _naming(bone)
+            _naming(bone, report)

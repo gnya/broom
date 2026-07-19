@@ -10,6 +10,7 @@ from .mesh import (
     MESH_OT_broom_show_dirty_transforms,
     MESH_OT_broom_show_unused_materials,
     MESH_OT_broom_show_unused_vertex_groups,
+    MESH_OT_broom_unselect_vertices,
 )
 from .modifier import (
     MODIFIER_OT_broom_naming,
@@ -37,6 +38,7 @@ classes = (
     MESH_OT_broom_naming,
     MESH_OT_broom_show_unused_vertex_groups,
     MESH_OT_broom_show_unused_materials,
+    MESH_OT_broom_unselect_vertices,
     ARMATURE_OT_broom_show_unused_bones,
     MESH_OT_broom_show_dirty_transforms,
     ARMATURE_OT_broom_rotation_mode,

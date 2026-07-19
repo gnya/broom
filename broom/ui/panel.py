@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from bpy.types import Panel
+
 from broom.ops import (
     ARMATURE_OT_broom_rotation_mode,
     ARMATURE_OT_broom_show_unused_bones,
@@ -13,6 +14,7 @@ from broom.ops import (
     MESH_OT_broom_show_dirty_transforms,
     MESH_OT_broom_show_unused_materials,
     MESH_OT_broom_show_unused_vertex_groups,
+    MESH_OT_broom_unselect_vertices,
     MODIFIER_OT_broom_naming,
     MODIFIER_OT_broom_shrink_panel,
     MODIFIER_OT_broom_subsurf_uv_smooth,
@@ -170,6 +172,12 @@ class VIEW3D_PT_broom(Panel):
             settings,
             "Dirty Transforms",
             {"exclude_pattern": ""},
+        )
+        _draw_operator(
+            col,
+            MESH_OT_broom_unselect_vertices,
+            settings,
+            "Unselect Vertices",
         )
 
         col = layout.column(align=True)

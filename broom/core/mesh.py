@@ -3,6 +3,8 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, Callable
 
+import bmesh
+
 from broom.utils import object_itr, parse_nodes_modifier_io
 
 if TYPE_CHECKING:
@@ -142,3 +144,31 @@ def mesh_show_dirty_transforms(exclude_pattern: str, report: Report = print):
                 {"INFO"},
                 f"Dirty transform mesh found. : {mesh.name}",
             )
+
+
+def mesh_unselect_vertices(report: Report = print):
+    for mesh in object_itr("MESH"):
+        if mesh.data is not None:
+            is_edit_mode = mesh.mode == "EDIT"
+
+            if is_edit_mode:
+                bm = bmesh.from_edit_mesh(mesh.data)
+                verts = bm.verts
+                edges = bm.edges
+                faces = bm.faces
+            else:
+                verts = mesh.data.vertices
+                edges = mesh.data.edges
+                faces = mesh.data.polygons
+
+            for vert in verts:
+                vert.select = False
+
+            for edge in edges:
+                edge.select = False
+
+            for face in faces:
+                face.select = False
+
+            if is_edit_mode:
+                bmesh.update_edit_mesh(mesh.data)
