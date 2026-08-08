@@ -46,7 +46,8 @@ def mesh_naming(report: Report = print):
 
 def mesh_show_unused_vertex_groups(report: Report = print):
     for mesh in object_itr("MESH"):
-        using = []
+        using = set()
+        filled = set()
 
         for modifier in mesh.modifiers:
             match modifier.type:
@@ -54,7 +55,7 @@ def mesh_show_unused_vertex_groups(report: Report = print):
                     if modifier.object is not None:
                         for bone in modifier.object.data.bones:
                             if bone.use_deform:
-                                using.append(bone.name)
+                                using.add(bone.name)
                 case "CLOTH":
                     for prop in {
                         "vertex_group_bending",
@@ -66,12 +67,12 @@ def mesh_show_unused_vertex_groups(report: Report = print):
                         "vertex_group_structural_stiffness",
                     }:
                         if (vertex_group := getattr(modifier.settings, prop, "")) != "":
-                            using.append(vertex_group)
+                            using.add(vertex_group)
                 case "FLUID":
                     if (
                         vertex_group := modifier.flow_settings.density_vertex_group
                     ) != "":
-                        using.append(vertex_group)
+                        using.add(vertex_group)
                 case "SOFT_BODY":
                     for prop in {
                         "vertex_group_goal",
@@ -79,7 +80,7 @@ def mesh_show_unused_vertex_groups(report: Report = print):
                         "vertex_group_spring",
                     }:
                         if (vertex_group := getattr(modifier.settings, prop, "")) != "":
-                            using.append(vertex_group)
+                            using.add(vertex_group)
                 case "NODES":
                     inputs, outputs = parse_nodes_modifier_io(modifier)
 
@@ -88,25 +89,37 @@ def mesh_show_unused_vertex_groups(report: Report = print):
                             input.get("use_attribute", False)
                             and input.get("attribute_name", "") != ""
                         ):
-                            using.append(input["attribute_name"])
+                            using.add(input["attribute_name"])
 
                     for output in outputs.values():
                         if (
                             output.get("use_attribute", False)
                             and output.get("attribute_name", "") != ""
                         ):
-                            using.append(output["attribute_name"])
+                            using.add(output["attribute_name"])
                 case _:
                     pass
 
             if (vertex_group := getattr(modifier, "vertex_group", "")) != "":
-                using.append(vertex_group)
+                using.add(vertex_group)
+
+        if mesh.data is not None:
+            for vertex in mesh.data.vertices:
+                for vertex_group in vertex.groups:
+                    if vertex_group.weight > 0.0:
+                        filled.add(vertex_group.group)
 
         for vertex_group in mesh.vertex_groups:
             if vertex_group.name not in using:
                 report(
                     {"INFO"},
                     f"Unused vertex group found. : {mesh.name} {vertex_group.name}",
+                )
+
+            if vertex_group.index not in filled:
+                report(
+                    {"INFO"},
+                    f"Empty vertex group found. : {mesh.name} {vertex_group.name}",
                 )
 
 

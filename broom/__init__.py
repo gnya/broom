@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Broom",
     "author": "gnya",
-    "version": (0, 1, 1),
+    "version": (0, 1, 2),
     "blender": (3, 6, 0),
     "description": "",
     "category": "Utility",

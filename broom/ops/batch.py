@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import bpy
 from bpy.app.handlers import persistent, save_pre
 from bpy.types import Operator
+
 from broom.props import BroomSettings
 from broom.utils import override
 
@@ -31,7 +32,7 @@ class VIEW3D_OT_broom_batch(Operator):
     @persistent
     def _batch_on_save(dummy: str):
         if BroomSettings.instance(bpy.context.scene).batch_on_save:
-            bpy.ops.view3d.broom_batch()
+            batch(bpy.context.scene, print)
 
     @staticmethod
     def register():
