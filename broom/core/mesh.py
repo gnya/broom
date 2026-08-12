@@ -4,6 +4,7 @@ import re
 from typing import TYPE_CHECKING, Callable
 
 import bmesh
+from bpy.utils import flip_name
 
 from broom.utils import object_itr, parse_nodes_modifier_io
 
@@ -48,6 +49,7 @@ def mesh_show_unused_vertex_groups(report: Report = print):
     for mesh in object_itr("MESH"):
         using = set()
         filled = set()
+        use_mirror = False
 
         for modifier in mesh.modifiers:
             match modifier.type:
@@ -97,6 +99,9 @@ def mesh_show_unused_vertex_groups(report: Report = print):
                             and output.get("attribute_name", "") != ""
                         ):
                             using.add(output["attribute_name"])
+                case "MIRROR":
+                    if modifier.use_mirror_vertex_groups:
+                        use_mirror = True
                 case _:
                     pass
 
@@ -104,10 +109,15 @@ def mesh_show_unused_vertex_groups(report: Report = print):
                 using.add(vertex_group)
 
         if mesh.data is not None:
+            filled_index = set()
+
             for vertex in mesh.data.vertices:
                 for vertex_group in vertex.groups:
                     if vertex_group.weight > 0.0:
-                        filled.add(vertex_group.group)
+                        filled_index.add(vertex_group.group)
+
+            for index in filled_index:
+                filled.add(mesh.vertex_groups[index].name)
 
         for vertex_group in mesh.vertex_groups:
             if vertex_group.name not in using:
@@ -116,7 +126,9 @@ def mesh_show_unused_vertex_groups(report: Report = print):
                     f"Unused vertex group found. : {mesh.name} {vertex_group.name}",
                 )
 
-            if vertex_group.index not in filled:
+            if vertex_group.name not in filled and (
+                not use_mirror or flip_name(vertex_group.name) not in filled
+            ):
                 report(
                     {"INFO"},
                     f"Empty vertex group found. : {mesh.name} {vertex_group.name}",
